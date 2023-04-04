@@ -1,10 +1,7 @@
 {% extends "base.html" %}
-<head>
-    <title>COMP 4949 Assignment 2</title>
-</head>
-<body>
+
 {% block content %}
-<h1>Heart Failure Prediction</h1>
+<h1 class="text-primary">Heart Failure Prediction</h1>
 <h2>Problem Definition</h2>
 
 <p>The dataset of interest in this report is the <a
@@ -22,10 +19,48 @@
 </ul>
 
 <h2>Exploratory Data Analysis</h2>
-<p>The data distribution of the target variable and the 5 significant features are as follows:</p>
+<h3 class="text-secondary">Evaluating Significant Features</h3>
+<p>There are a total of 12 features (aside from the target variable), so picking the top 5 features from each routine
+    seems like a reasonable number. The following automated feature selection routines were used to identify significant
+    features:</p>
+<ul>
+    <li>Forward feature selection (FFS)</li>
+    <li>Random forest feature importance</li>
+    <li>Chi-squared test</li>
+</ul>
+<p>It was found that recursive feature elimination (RFE) ranked all 12 features equally, so its results are
+    discarded.</p>
 
-<table class="boostrap4_table_head_dark_striped_rounded_compact">
-    <thead>
+<p>The features selected by the remaining routines are as follows:</p>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+    <th></th>
+    <th>Top 5 Features</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>FFS</td>
+        <td>time<br>serum_creatinine<br>ejection_fraction<br>age<br>serum_sodium</td>
+    </tr>
+    <tr>
+        <td>Random Forest<br>Feature Importance</td>
+        <td>time<br>serum_creatinine<br>creatinine_phosphokinase<br>age<br>serum_sodium</td>
+    </tr>
+    <tr>
+        <td>Chi-squared Test</td>
+        <td>platelets<br>time<br>creatinine_phosphokinase<br>ejection_fraction<br>age</td>
+    </tr>
+    </tbody>
+</table>
+
+<p>Models were developed with featues selected by all of these routines, and it was found that creatinine_phosphokinase
+    was also insignificant, leaving 5 significant variables to work with.</p>
+
+<h3 class="text-secondary">Feature Information</h3>
+<p>The data distribution of the target variable and the 5 significant features are as follows:</p>
+<table class="table table-striped">
+    <thead class="thead-dark">
     <tr>
         <th></th>
         <th>count</th>
@@ -42,8 +77,8 @@
     <tr>
         <td>DEATH_EVENT</td>
         <td>299.0</td>
-        <td>0.3210702341137120</td>
-        <td>0.4676704280567720</td>
+        <td>0.3211</td>
+        <td>0.4677</td>
         <td>0.0</td>
         <td>0.0</td>
         <td>0.0</td>
@@ -53,8 +88,8 @@
     <tr>
         <td>time</td>
         <td>299.0</td>
-        <td>130.2608695652170</td>
-        <td>77.61420795029340</td>
+        <td>130.2609</td>
+        <td>77.6142</td>
         <td>4.0</td>
         <td>73.0</td>
         <td>115.0</td>
@@ -64,8 +99,8 @@
     <tr>
         <td>age</td>
         <td>299.0</td>
-        <td>60.83389297658860</td>
-        <td>11.894809074044500</td>
+        <td>60.8339</td>
+        <td>11.8948</td>
         <td>40.0</td>
         <td>51.0</td>
         <td>60.0</td>
@@ -75,8 +110,8 @@
     <tr>
         <td>serum_creatinine</td>
         <td>299.0</td>
-        <td>1.393879598662210</td>
-        <td>1.034510064089850</td>
+        <td>1.3939</td>
+        <td>1.0345</td>
         <td>0.5</td>
         <td>0.9</td>
         <td>1.1</td>
@@ -86,8 +121,8 @@
     <tr>
         <td>serum_sodium</td>
         <td>299.0</td>
-        <td>136.62541806020100</td>
-        <td>4.412477283909230</td>
+        <td>136.6254</td>
+        <td>4.4125</td>
         <td>113.0</td>
         <td>134.0</td>
         <td>137.0</td>
@@ -97,41 +132,38 @@
     <tr>
         <td>ejection_fraction</td>
         <td>299.0</td>
-        <td>38.08361204013380</td>
-        <td>11.834840741039200</td>
+        <td>38.0836</td>
+        <td>11.8348</td>
         <td>14.0</td>
         <td>30.0</td>
         <td>38.0</td>
         <td>45.0</td>
         <td>80.0</td>
     </tr>
-    <tr>
-        <td></td>
-    </tr>
     </tbody>
 </table>
 <p>The target variable DEATH_EVENT is a Boolean variable indicating whether the patient deceased during the follow-up
     period. Of the total number of rows in the dataset, roughly one-third of them has deceased while the remaining rows
     survived the entire follow-up period.</p>
-<img class="graphs" alt="Histogram of DEATH_EVENT" src="https://i.imgur.com/DczcJxT.png">
+<img class="graph" alt="Histogram of DEATH_EVENT" src="https://i.imgur.com/DczcJxT.png">
 <p>The “time” feature measures the follow-up period in days. It has a strong negative correlation with DEATH_EVENT: the
     longer the follow-up period, the less likely the patient is to be deceased during the follow-up period. This is
     contrary to what one might expect, as it’s logical to assume that a patient is more likely to pass away during the
     follow-up period if the period is longer. Considering this information, one might hypothesize that patients who have
     a high probability of passing away given their parameters for the other features are likely to pass away early on,
     and the longer a patient survives the more stable their implied condition.</p>
-<img class="graphs" alt="Histogram of time versus DEATH_EVENT" src="https://i.imgur.com/rnBTaiY.png">
+<img class="graph" alt="Histogram of time versus DEATH_EVENT" src="https://i.imgur.com/rnBTaiY.png">
 <p>The “age” feature is straightforward, it’s simply the patient’s current age at the time of measuring their vitals. As
     one might expect, the older the patient, the higher the probability of passing away during the follow-up period. The
     distribution of age itself roughly follows normal distribution with a sharp decline past 70 years old.</p>
-<img class="graphs" alt="Histogram of age versus DEATH_EVENT" src="https://i.imgur.com/je3ZSAs.png">
+<img class="graph" alt="Histogram of age versus DEATH_EVENT" src="https://i.imgur.com/je3ZSAs.png">
 <p>The “serum_creatinine” feature represents the amount of serum creatinine in the blood in mg/dL. Serum creatinine
     levels can be an important marker of kidney function in people with heart failure. Heart failure can cause decreased
     blood flow to the kidneys, which can lead to impaired kidney function and higher serum creatinine levels.
     Distribution is concentrated between 0 and 2, which is likely within the average range of serum creatinine levels in
     a normal human body. Proportionately, patients exceeding roughly 1.5mg/dL of serum creatinine are much likelier to
     pass away during the follow-up period. </p>
-<img class="graphs" alt="Histogram of serum_creatinine versus DEATH_EVENT" src="https://i.imgur.com/jm065pB.png">
+<img class="graph" alt="Histogram of serum_creatinine versus DEATH_EVENT" src="https://i.imgur.com/jm065pB.png">
 <p>The “serum_sodium” feature indicates the level of serum sodium in the blood in mEq/L. In heart failure, there can be
     a variety of changes in sodium and fluid balance in the body, which can affect the heart's ability to pump
     effectively. Hyponatremia, which is a low level of sodium in the blood, can be a common finding in people with heart
@@ -139,14 +171,14 @@
     heart failure, especially in those with impaired kidney function. Indeed, the distribution of serum sodium versus
     DEATH_EVENT supports these medical observations, with proportionately the least number of deaths within about 2
     standard deviations of the normally distributed histogram.</p>
-<img class="graphs" alt="Histogram of serum_sodium versus DEATH_EVENT" src="https://i.imgur.com/pZecwpZ.png">
+<img class="graph" alt="Histogram of serum_sodium versus DEATH_EVENT" src="https://i.imgur.com/pZecwpZ.png">
 <p>The ”ejection_fraction” feature represents the percentage of blood leaving the heart at each contraction. In a
     healthy heart, the ejection fraction is typically between 50% and 70%, while in heart failure, the ejection fraction
     may be reduced. Indeed, the histogram supports these findings as there are proportionately a lot more deaths as
     ejection fraction drops below 40%.</p>
-<img class="graphs" alt="Histogram of serum_creatinine versus DEATH_EVENT" src="https://i.imgur.com/mU04cbN.png">
+<img class="graph" alt="Histogram of serum_creatinine versus DEATH_EVENT" src="https://i.imgur.com/mU04cbN.png">
 <p>As such, every one of the significant variables have some kind of medical basis for their significance which is
     highly encouraging, we can have good confidence that our models are using good features.</p>
+<h2></h2>
 {% endblock content %}
-</body>
 
