@@ -1,26 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Predict Page</h1>
+<style>
+    form {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        grid-gap: 10px;
+        align-items: center;
+    }
+
+    label {
+        text-align: left;
+        grid-column: 1 / 2;
+    }
+
+    input[type=submit] {
+        grid-column: 1 / -1;
+        justify-self: center;
+    }
+</style>
+<h1>Predict</h1>
 <form action="{% url 'predictPost' %}" method="post">
-  {% csrf_token %}
-  <label for="time">Time:</label>
-  <input type="number" id="time" name="time"><br><br>
+    {% csrf_token %}
+    <label for="time">Time (follow-up period in days):</label>
+    <input type="number" id="time" name="time" placeholder="i.e. 4 to 285" required><br><br>
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" placeholder="i.e. 40 to 95" required><br><br>
 
-  <label for="age">Age:</label>
-  <input type="number" id="age" name="age"><br><br>
+    <label for="serum_creatinine">Serum Creatinine (mg/dL):</label>
+    <input type="number" id="serum_creatinine" name="serum_creatinine" placeholder="i.e. 0.5 to 9.4"
+           required><br><br>
 
-  <label for="serum_creatinine">Serum Creatinine:</label>
-  <input type="number" id="serum_creatinine" name="serum_creatinine"><br><br>
+    <label for="serum_sodium">Serum Sodium (mEq/L):</label>
+    <input type="number" id="serum_sodium" name="serum_sodium" placeholder="i.e. 113 to 148" required><br><br>
 
-  <label for="serum_sodium">Serum Sodium:</label>
-  <input type="number" id="serum_sodium" name="serum_sodium"><br><br>
+    <label for="ejection_fraction">Ejection Fraction (%):</label>
+    <input type="number" id="ejection_fraction" name="ejection_fraction" placeholder="i.e. 14 to 80" required><br><br>
 
-  <label for="ejection_fraction">Ejection Fraction:</label>
-  <input type="number" id="ejection_fraction" name="ejection_fraction"><br><br>
-
-  <input type="submit" value="Submit">
+    <input type="submit" value="Submit">
 </form>
+The placeholders provide examples of the format and type of input expected, while the hints give more information about the meaning and units of each input. Additionally, the "required" attribute on each input field indicates that the user must enter a value before submitting the form.
+
 
 {% if errorMessage %}<p><strong>{{errorMessage}}</strong></p>{% endif %}
 {% endblock content %}
