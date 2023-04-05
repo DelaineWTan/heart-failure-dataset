@@ -44,9 +44,17 @@ def results(request, time, age, serum_creatinine, serum_sodium, ejection_fractio
     # Create a single prediction.
     predictDf = pd.DataFrame(columns=['time', 'age', 'serum_creatinine', 'serum_sodium', 'ejection_fraction'])
     predictDf.loc[0] = [time, age, serum_creatinine, serum_sodium, ejection_fraction]
-    prediction = str(loadedModel.predict(predictDf))
-    print(prediction)
-    print(loadedModel.predict_proba(predictDf))
+    predict_int = str(loadedModel.predict(predictDf)[0])
+    predict_proba_list = loadedModel.predict_proba(predictDf)[0].tolist()
+    if predict_int == 0:
+        confidence = predict_proba_list[0]
+        prediction = "YES"
+    else:
+        confidence = predict_proba_list[1]
+        prediction = "NO"
+    confidence = '{:.2%}'.format(confidence)
+    print(confidence)
+    print(type(confidence))
     return render(request, 'results.html', {'time': time, 'age': age, 'serum_creatinine': serum_creatinine,
                                             'serum_sodium': serum_sodium, 'ejection_fraction': ejection_fraction,
-                                            'prediction': prediction})
+                                            'prediction': prediction, 'confidence': confidence})
