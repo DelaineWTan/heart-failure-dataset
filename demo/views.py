@@ -35,6 +35,7 @@ def predictPost(request):
 
 
 def results(request, time, age, serum_creatinine, serum_sodium, ejection_fraction):
+    serum_creatinine = float(serum_creatinine)
     print("*** Inside results()")
     # load saved model
     model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'model.pkl')
