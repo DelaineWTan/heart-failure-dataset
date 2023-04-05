@@ -2,5 +2,26 @@
 
 {% block content %}
 <h1>Predict Page</h1>
+<form action="{% url 'predictPost' %}" method="post">
+  {% csrf_token %}
+  <label for="time">Time:</label>
+  <input type="number" id="time" name="time"><br><br>
+
+  <label for="age">Age:</label>
+  <input type="number" id="age" name="age"><br><br>
+
+  <label for="serum_creatinine">Serum Creatinine:</label>
+  <input type="number" id="serum_creatinine" name="serum_creatinine"><br><br>
+
+  <label for="serum_sodium">Serum Sodium:</label>
+  <input type="number" id="serum_sodium" name="serum_sodium"><br><br>
+
+  <label for="ejection_fraction">Ejection Fraction:</label>
+  <input type="number" id="ejection_fraction" name="ejection_fraction"><br><br>
+
+  <input type="submit" value="Submit">
+</form>
+
+{% if errorMessage %}<p><strong>{{errorMessage}}</strong></p>{% endif %}
 {% endblock content %}
 

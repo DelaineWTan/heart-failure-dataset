@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import homePageView, predictPageView, resultsPageView
+from .views import homePageView, predictPageView, predictPost, results
 
 urlpatterns = [
     path('', homePageView, name='home'),
     path('predict/', predictPageView, name='predict'),
-    path('results/', resultsPageView, name='results'),
+    path('results/<int:time>/<int:age>/<float:serum_creatinine>/<int:serum_sodium>/<int:ejection_fraction>/',
+         results, name='results'),
+    path('predictPost/', predictPost, name='predictPost'),
 ]
